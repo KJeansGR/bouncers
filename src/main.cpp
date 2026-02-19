@@ -5,34 +5,45 @@
 #include <bn_display.h>
 #include <bn_random.h>
 #include <bn_vector.h>
+#include <bn_log.h>
 
 #include "bn_sprite_items_dot.h"
 
 static constexpr int HALF_SCREEN_WIDTH = bn::display::width() / 2;
-static constexpr int HALF_SCREEN_HEIGHT = bn::display::height() / 2; 
 
 static constexpr bn::fixed MIN_X = -HALF_SCREEN_WIDTH;
 static constexpr bn::fixed MAX_X = HALF_SCREEN_WIDTH;
-static constexpr bn::fixed MIN_Y = -HALF_SCREEN_HEIGHT;
-static constexpr bn::fixed MAX_Y = HALF_SCREEN_HEIGHT;
 
-static constexpr bn::fixed MIN_DX = -2;
-static constexpr bn::fixed MAX_DX = 2;
-static constexpr bn::fixed MIN_DY = -2;
-static constexpr bn::fixed MAX_DY = 2;
+static constexpr bn::fixed BASE_SPEED = 2;
+
+static constexpr int MAX_BOUNCERS = 20;
 
 
 int main() {
     bn::core::init();
 
-    bn::vector<bn::sprite_ptr, 20> sprites = {};
-    bn::vector<bn::fixed, 20> speeds = {};
+    bn::vector<bn::sprite_ptr, MAX_BOUNCERS> sprites = {};
+    bn::vector<bn::fixed, MAX_BOUNCERS> speeds = {};
 
     while(true) {
 
         if(bn::keypad::a_pressed()) {
-            sprites.push_back(bn::sprite_items::dot.create_sprite());
-            speeds.push_back(3);
+            if(sprites.size() < sprites.max_size()) {
+                sprites.push_back(bn::sprite_items::dot.create_sprite());
+                speeds.push_back(BASE_SPEED);
+            }
+        }
+
+        if(bn::keypad::b_pressed()) {
+            bn::fixed x_sum = 0;
+            for(bn::sprite_ptr sprite : sprites) {
+                x_sum += sprite.x();
+            }
+            bn::fixed x_average= x_sum;
+            if(sprites.size() > 0) {
+                x_average /= sprites.size();
+            }
+            BN_LOG("Average x: ", x_average);
         }
 
         for(int i = 0; i < sprites.size(); i++) {
@@ -52,7 +63,6 @@ int main() {
             }
 
             sprite.set_x(x);
-
         }
 
         bn::core::update();
