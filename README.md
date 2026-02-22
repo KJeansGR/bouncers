@@ -1,4 +1,11 @@
 # Bouncers
 An exercise to learn about functions and classes.
+#
+This assignmet shocases my ability to make classes and manipulate many sprites simultaneously
+I have specifically added a unique sprite and neat rotation to the sprites themselves.
 
-Please find instructions in [instructions.md](instructions.md).
+Here is the GIT Pages
+
+#
+![Gameplay Demo](DEMO_BOUNCERS.gif)
+
